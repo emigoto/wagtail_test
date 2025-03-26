@@ -8,7 +8,10 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from search import views as search_views
 
+from blog.customize import custom_add_subpage  # 編集者権限の非表示機能のカスタマイズ
+
 urlpatterns = [
+    path('admin/pages/<int:parent_page_id>/add_subpage/', custom_add_subpage, name='wagtailadmin_pages:add_subpage'), # 編集者権限の非表示機能のオーバライド
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
