@@ -1,3 +1,3 @@
 Editor
-hanako　ikedaikeda
+hanako ikedaikeda
 tagtest gotogoto
