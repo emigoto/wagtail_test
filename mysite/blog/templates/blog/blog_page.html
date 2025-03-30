@@ -1,4 +1,5 @@
-<!-- Load the wagtailimages_tags: -->
+{% extends "base.html" %}
+
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block body_class %}template-blogpage{% endblock %}
@@ -20,5 +21,47 @@
     {% endfor %}
 
     <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+
+    <!-- Add this: -->
+    {% with tags=page.tags.all %}
+        {% if tags %}
+            <div class="tags">
+                <h3>Tags</h3>
+                {% for tag in tags %}
+                    <a href="{% slugurl 'tags' %}?tag={{ tag }}"><button type="button">{{ tag }}</button></a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+
+    <!-- Add いいね -->
+    {% csrf_token %}
+    <button id="likeButton" data-page-id="{{ page.id }}">いいね</button>
+    <span id="likeCount">{{ page.get_like_count }}</span>
+
+    <script>
+    document.getElementById('likeButton').addEventListener('click', function() {
+        var pageId = this.dataset.pageId;
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch('/like/' + pageId + '/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('likeCount').textContent = data.likes;
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    </script>
+
+    <!-- Add いいね end-->
+
 
 {% endblock %}

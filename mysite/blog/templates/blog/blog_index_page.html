@@ -1,31 +1,31 @@
 {% extends "base.html" %}
-
-<!-- Load wagtailimages_tags: -->
 {% load wagtailcore_tags wagtailimages_tags %}
 
-{% block body_class %}template-blogindexpage{% endblock %}
-
 {% block content %}
-    <h1>{{ page.title }}</h1>
+    <h1>Tag Search</h1>
 
-    <div class="intro">{{ page.intro|richtext }}</div>
+    <form action="{% pageurl page %}" method="get">
+        <input type="text" name="q" value="{{ search_query }}">
+        <input type="submit" value="Search">
+    </form>
 
+    <h2>{% if search_query %}Results for "{{ search_query }}"{% else %}All Articles{% endif %}</h2>
 
-
-<!-- Modify this: -->
-    {% for post in blogpages %}
-        {% with post=post.specific %}
-            <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
+    {% if blogpages %}
+        {% for blogpage in blogpages %}
+            <article>
+                <h3><a href="{% pageurl blogpage %}">{{ blogpage.title }}</a></h3>
+                <p>{{ blogpage.specific.intro }}</p>
+                <p>Published: {{ blogpage.first_published_at|date:"F j, Y" }}</p>
+            </article>
 
             <!-- Add this: -->
-            {% with post.main_image as main_image %}
+            {% with blogpage.main_image as main_image %}
                 {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
             {% endwith %}
 
-            <p>{{ post.intro }}</p>
-            {{ post.body|richtext }}
-        {% endwith %}
-    {% endfor %}
-
-
+        {% endfor %}
+    {% else %}
+        <p>No articles found.</p>
+    {% endif %}
 {% endblock %}

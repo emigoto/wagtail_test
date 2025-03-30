@@ -10,12 +10,15 @@ from search import views as search_views
 
 from blog.customize import custom_add_subpage  # 編集者権限の非表示機能のカスタマイズ
 
+from blog import views # いいね
+
 urlpatterns = [
     path('admin/pages/<int:parent_page_id>/add_subpage/', custom_add_subpage, name='wagtailadmin_pages:add_subpage'), # 編集者権限の非表示機能のオーバライド
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
+    path('like/<int:page_id>/', views.like_blogpage, name='like_blogpage'),
 ]
 
 
